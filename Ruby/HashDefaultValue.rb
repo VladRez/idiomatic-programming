@@ -33,7 +33,8 @@ def default_value_initialized_hash(str)
 end
 
 def array_initialized_hash(str)
-  #The block will get invoked for each key access
+  #Instead of copying an empty array into each hash key the block
+  #will get invoked for each key access, if and only if the key is missing
   hash = Hash.new{|sub_hash, key| sub_hash[key] = []}
   str.split(" ").each_with_index do |key, value|
       hash[key] << value
