@@ -17,10 +17,13 @@ fruitCategory = "Apple";
 Strings can be concatenated with the " + "
  */
 var fruitSubCategory = "Fuji";
-var fruitFullName = fruitSubCategory + fruitCategory;
+var fruitFullName = fruitSubCategory + " " + fruitCategory + "'s";
 /*
 Numbers can also be concatenated with strings
 */
-var fruitWeightlbs= 0.33;
+var fruitWeightLbs= 0.33;
+var fruitQuantity = 10;
 
-console.log(fruitFullName + " weight in lbs: " + fruitWeightlbs);
+var message = fruitQuantity + " " + fruitFullName + " weight in lbs: " + fruitWeightLbs * fruitQuantity;
+//10 Fuji Apple's weight in lbs: 3.3000000000000003
+
