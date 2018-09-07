@@ -8,7 +8,7 @@ A JavaScript implementation is made up of three core parts:
 * Document Object Model - API for mapping out HTML and XML pages as nodes. 
 * Browser Object Model - Allows access and manipulation browser window
 
-<!--
+
 # ECMAScript
 
 The European Computer Manufacturers Association (ECMA) over a decade ago standardized and created specification for JavaScript known today as EMCAScript.
@@ -28,4 +28,5 @@ The Document Object Molde is an API for mapping out HTML and XML pages as nodes.
 # Browser Object Model
 
 The Browser Object Model allows access browser window. 
--->
+
+
