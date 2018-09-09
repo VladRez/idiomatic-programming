@@ -3,7 +3,7 @@
 //This is a C-Style single line comment
 /**
  * This is a C-Style
- *  multiline comment
+ *  multi-line comment
  */
 
 //Everything is case sensitive 'name' is different from 'Name'
@@ -93,8 +93,8 @@ var obj = new Object();
  * valueOf() - returns primitive equivalent of the object
  */
 
- //Operators - Used to manipulate data values
- //Unary Operators - Increment/Decrement both prefix/postfix ++val / val--
+//Operators - Used to manipulate data values
+// Unary Operators - Increment/Decrement both prefix/postfix ++val / val--
 var valA = 3;
 var valB = 15;
 var valC = valA-- + valB; // 18
