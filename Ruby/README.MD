@@ -166,7 +166,7 @@ city, state, country = "SF,CA,USA".split(',')
 * Ranges also works with alphabet ranges `rng = 'a'..'z'`
 
 ## Associative Arrays or Hash
-* Stores key value pairs
+* Stores key value pairs.
 * Initialized by `{}`
 ```ruby
 items = {
