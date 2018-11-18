@@ -1,4 +1,4 @@
-# RUBY
+# RUBY Language 
 
 A pure object oriented language know for it's high level semantic syntax and
 garbage collected memory management. Almost everything is an object including what would be consider primitive
