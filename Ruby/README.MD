@@ -84,7 +84,7 @@ city, state, country = "SF,CA,USA".split(',')
 
 ## Numbers
 
-### Acceptable Numbers
+### Valid Numbers
 * Integers:
     * 0, 5, -25,  etc..
 * Floating Point:
@@ -105,20 +105,26 @@ city, state, country = "SF,CA,USA".split(',')
 -->
 * Valid operations:
     * Addition: `1 + 1`
+        * `variable += 1`
     * Subtraction: `9.6 - 0.33`
+        * `variable -= 1`
     * Multiplication: `6 * 7`
+        * `variable *= 1`
     * Division: `4 / 2`
+        * `variable /= 1`
         * `4.div(2)`
+        * dividing by zero will crash the program with `ZeroDivisionError`
     * Power: `3 ** 4`
     * Modulus: `15 % 3`
+        * `variable %= 1`
         * `15.modulo(3)`
     * Negation:`-1` 
 
 
 ## Boolean
 * Valid Boolean:
-    * true
-    * false
+    * `true`
+    * `false`
 * Expressions:
     * `4 > 2` returns `true`. 
     * `4 < 2` returns `false`.
@@ -143,7 +149,6 @@ city, state, country = "SF,CA,USA".split(',')
     * `and`, `or`, `not`
     * c-style: `&&`, `||`, `!`
 
-
 # Data Structures
 
 ## Arrays
@@ -165,7 +170,7 @@ city, state, country = "SF,CA,USA".split(',')
     * `rng.each` iterate over each member.
 * Ranges also works with alphabet ranges `rng = 'a'..'z'`
 
-## Associative Arrays or Hash
+## Hash (Associative Array)
 * Stores key value pairs.
 * Initialized by `{}`
 ```ruby
@@ -178,4 +183,138 @@ items = {
 * Value retrieved by key `items['hammer']` returns `'tool'`.
     * `nil` is returned if key doesn't exist.
     
+
+<!-- ## Relational Expressions -->
+## Control Structures
+
+### Decision Structure
+* `if`
+```ruby
+
+if variableA > 80
+    puts("true")
+end
+```
+* `if` `else`
+```ruby
+if variableA <= 100
+    puts("true")
+    else
+    puts("false")
+end
+```
+* `elsif` 
+```ruby
+if trafficLight == "Green"
+    puts("Go")
+    elsif trafficLight == "Yellow"
+    puts("Slow")
+    else trafficLight == "Red"
+    puts("stop")
+end
+```
+
+* `case` expression
+```ruby
+case mph
+    when 70..100
+        speedStatus = "speeding"
+    when 45..69
+        speedStatus = "safe"
+    when 1..44
+        speedStatus = "slow"
+    else
+        speedStatus = "stalling"
+end
+puts(speedStatus)
+```
+### Looping Structure
+
+* `while` comparison
+    * while something is true
+```ruby
+while true
+    puts("infinite loop")
+end
+
+controlVar = 0
+
+while controlVar < 10
+    puts(controlVar)
+    controlVar += 1
+end
+```
+* `until` comparison
+    * until something is true
+```ruby
+controlVar = 0
+until controlVar > 5
+    puts(controlVar)
+    controlVar += 1
+end
+```
+* Use `break` to end the loop.
+    * Not best practice to end loop early without control logic.
+```ruby
+controlVar = 0
+
+while controlVar < 10
+    puts(controlVar)
+    if controlVar == 5 
+        break
+    end
+    controlVar += 1
+end
+```
+<!---
+* `redo`
+    * when user enters a wrong input for example, redo restarts from the top
+-->
+### Iterators
+
+* Traverse a range and perform operation on N member items.
+* `.times` repeats an operation N times
+```ruby
+5.times do
+    puts("hello") # print hello 5 times
+end
+```
+* `.upto()` 
+```ruby
+0.upto(10) do |n|
+    puts(n) # print 0 up to 10
+end
+```
+* `.step()`
+
+```ruby
+0.step(1000,100) do |n|
+    puts(n) # prints 0 to 1,000 skipping 100 at each iteration
+end
+```
+* For `.each` loop
+```ruby
+arr = [30, 18, 45, 8]
+arr.each do |ele|
+    puts(ele) # prints each element, not index
+end
+```
+* For `.in` loop (same behavior as for each in other languages)
+```ruby
+arr = [30, 18, 45, 8]
+for ele in arr
+    puts(ele) # prints each element
+end
+```
+* Use `next` to skip an iteration.
+    * Works with `while` loops
+```ruby
+arr = [30, 18, 45, 8]
+for ele in arr
+if ele % 2 == 0 
+    next
+end
+    puts(ele) # prints each element
+end
+```
 
