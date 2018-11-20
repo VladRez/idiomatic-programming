@@ -317,7 +317,18 @@ end
     puts(ele) # prints each element
 end
 ```
-
+Side Note: Coming from a c-style language where loops are in the style of `initializer; boolean; steps`
+```javascript
+for(i = 0; i < array.length; i++){
+    //do something
+}
+```
+In ruby you can achieve the same with
+```ruby
+(0..array.length - 1).step(1).each do |i|
+print(i, "\t", array[i])
+end
+```
 # Methods (functions)
 * Formed with `def` keyword
 * Takes in any number of arguments
