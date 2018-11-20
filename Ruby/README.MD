@@ -1,4 +1,4 @@
-# RUBY Language 
+# Ruby Basics 
 
 A pure object oriented language know for it's high level semantic syntax and
 garbage collected memory management. Almost everything is an object including what would be consider primitive
@@ -315,6 +315,72 @@ if ele % 2 == 0
     next
 end
     puts(ele) # prints each element
+end
+```
+
+# Methods (functions)
+* Formed with `def` keyword
+* Takes in any number of arguments
+```ruby
+#define a method
+def isPrime?(num)
+    (2...num).each do |n|
+        if num % n == 0
+            return false
+        end
+    end
+    return num > 1
+end
+
+#call a method
+prints(isPrime?(5)) # return true
+prints(isPrime?(4)) # return false
+```
+* arguments can be assigned with a default value
+```ruby
+def toFX(amount, rate = 0.5)
+    return amount * rate
+end 
+puts(toFX(100)) # returns 50
+puts(toFX(100,1)) # returns 100
+```
+* For Methods with a list of arguments/parameters, append a `*` to arguments. 
+    * arguments are converted into an array
+```ruby
+def totalSum(*a)
+sum = 0
+    for ele in a
+        sum += ele
+    end
+
+    return sum
+end
+
+puts(totalSum(5, 1, 4)) # Outputs 10
+```
+
+### Procedures
+
+* Methods that don't return values
+    * Also used as a [*side effect*](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect)
+
+```ruby
+# Display a message
+def displayError(error)
+    print("Warning ", error)
+end
+```
+# Class
+* Defining an abstract data type (ADT)
+    * properties (Attributes)
+    * behaviors (Operations)
+    * Initializer (Constructor)
+        * Fields
+```ruby
+class Car
+    # main Initialize/constructor
+    def initialize(model, year)
+    end
 end
 ```
 
