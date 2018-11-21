@@ -7,17 +7,17 @@ intermediary language like C#/VB or java. Completely cross-platform and most rec
 Ruby on Rails framework. 
 
 # Displaying Data
-* `puts("text")` displays user data to the shell.
-    * This method adds a newline `\n` at the end.
-    * Parenthesis are optional.
-    * Accepts multiple arguments, `puts("A","B")`, delimited by a newline character.
-* `print("text")` prints without a newline. 
-    * Accepts multiple arguments and not delimited. 
-* `gets` retrieves data from user keyboard. 
-    * Receives all of it's data as a string, this includes numbers.
-    * Variable assigned with this method will be concatenated with a newline `\n` character.
-        * Use `Integer(variable)` or `Float(variable)` to convert from string to number.
-        * Use `.chomp()` method to remove the newline character.
+* `puts("text")` displays user data to the shell
+    * This method adds a newline `\n` at the end
+    * Parenthesis are optional
+    * Accepts multiple arguments, `puts("A","B")`, delimited by a newline character
+* `print("text")` prints without a newline
+    * Accepts multiple arguments and not delimited
+* `gets` retrieves data from user keyboard
+    * Receives all of it's data as a string, this includes numbers
+    * Variable assigned with this method will be concatenated with a newline `\n` character
+        * Use `Integer(variable)` or `Float(variable)` to convert from string to number
+        * Use `.chomp()` method to remove the newline character
 
 # Variables
 * Common variable styles:
