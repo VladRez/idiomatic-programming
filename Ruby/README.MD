@@ -373,7 +373,7 @@ puts(totalSum(5, 1, 4)) # Outputs 10
 ### Procedures
 
 * Methods that don't return values
-    * Also used as a [*side effect*](https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect)
+    * Also used as a [*side effect*][side_effect]
 
 ```ruby
 # Display a message
@@ -386,12 +386,24 @@ end
     * properties (Attributes)
     * behaviors (Operations)
     * Initializer (Constructor)
-        * Fields
+        * Fields (Members)
 ```ruby
 class Car
     # main Initialize/constructor
     def initialize(model, year)
+    #Fields
+        @model = model
+        @year = year
     end
 end
 ```
 
+* From an entry point we will create a new *instance* variable of type class
+    * `Class_Name.new()` will invoke the initializer and assign each argument to the corresponding argument to it's field/member 
+```ruby
+myCar = Car.new("sedan","2007")
+```
+* printing `class_name.inspect` will show the state of the object, has been properly initialized? 
+
+
+[side_effect]: "https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect"
