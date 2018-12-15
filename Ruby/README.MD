@@ -347,7 +347,9 @@ end
 prints(isPrime?(5)) # return true
 prints(isPrime?(4)) # return false
 ```
+
 * arguments can be assigned with a default value
+
 ```ruby
 def toFX(amount, rate = 0.5)
     return amount * rate
@@ -355,8 +357,10 @@ end
 puts(toFX(100)) # returns 50
 puts(toFX(100,1)) # returns 100
 ```
+
 * For Methods with a list of arguments/parameters, append a `*` to arguments. 
     * arguments are converted into an array
+
 ```ruby
 def totalSum(*a)
 sum = 0
@@ -382,28 +386,149 @@ def displayError(error)
 end
 ```
 # Class
+
 * Defining an abstract data type (ADT)
     * properties (Attributes)
     * behaviors (Operations)
     * Initializer (Constructor)
         * Fields (Members)
+
 ```ruby
 class Car
     # main Initialize/constructor
-    def initialize(model, year)
+    def initialize(type, year)
     #Fields
-        @model = model
+        @type = type
         @year = year
     end
 end
 ```
 
 * From an entry point we will create a new *instance* variable of type class
-    * `Class_Name.new()` will invoke the initializer and assign each argument to the corresponding argument to it's field/member 
+    * `Class_Name.new()` will invoke the initializer and assign each argument to the corresponding field/member 
+
 ```ruby
 myCar = Car.new("sedan","2007")
 ```
-* printing `class_name.inspect` will show the state of the object, has been properly initialized? 
+
+Invoking `variable_name.inspect` will show the state of the object. If the variable properly initialized the object we will see aninternal name followed by the initialized fields.
+
+By convention some implementation of a to string `to_s` method is used to display the *state* or the important data of a class object.
+
+```ruby
+class Car
+    # main Initialize/constructor
+    def initialize(type, year)
+    #Fields
+        @type = type
+        @year = year
+    end
+    
+    def to_s
+        print("Car Type: " + @type + " and year " + @year)
+    end
+end
+```
+
+Additionally we also want to access and write each individual attribute.
+
+
+```ruby
+class Car
+    # main Initialize/constructor
+    def initialize(type, year)
+    #Fields
+        @type = type
+        @year = year
+    end
+    
+    # read type
+    def type
+        return @type
+    end
+
+    # write type
+    def type=(my_type)
+        @type=my_type
+    end
+    
+    # read year
+    def year
+        return @year
+    end
+    
+    # write year
+    def year=(my_year)
+        @year=year
+    end
+
+    def to_s
+        print("Car Type: " + @type + " and year " + @year)
+    end
+end
+```
+
+Alternatively:
+
+```ruby
+class Car
+    # main Initialize/constructor
+    def initialize(type, year)
+        # attributes
+        @type = type
+        @year = year
+    end
+    
+    attr_reader :type, :year
+    attr_writer :type, :year
+
+    def to_s
+        print("Car Type: " + @type + " and year " + @year)
+    end
+end
+```
+
++ Class Variables are variables whos values are available through each and every instances of a class.
+    + Formed by combining `@@` and a variable name with a value
+    + Also known as `static` variables
+
+```ruby
+
+class Car
+
+@@instance_number = 0
+
+# main Initialize/constructor
+    def initialize(type, year)
+        # attributes
+        @type = type
+        @year = year
+        @@instance_number += 1
+    end
+    
+    attr_reader :type, :year
+    attr_writer :type, :year
+
+    def to_s
+        return "Car Type: " + @type + " and year " + @year.to_s 
+    end
+end
+
+```
++ Class Methods are methods which can be called from the class and an instance of a class. 
+    + Referred to as `self`
+
+
+```ruby
+
+    def self.instances
+      return @@instance_number
+    end
+
+```
+
++ The number of instances can be retrieved with `Car.instances`. 
+
 
 
 [side_effect]: "https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect"
