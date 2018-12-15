@@ -101,4 +101,20 @@ var valC = valA-- + valB; // 18
 //Adds valA and valB is added first then valA is decremented by one
 var valD = valA + valB; // 2 + 15 = 17
 
+function LetterChange(str){
+    var rxAlpha = /^[a-zA-Z]$/;
+    var rxVowel = /^[aeiou]$/;
+    var wordArr = str.split(' ');
 
+    //Using split/join, map and anonymous functions we can short-hand for each loop
+    return wordArr.map(function(word){
+        return word.split('').map(function(chr){
+            //Using Regex + ternary operator to short-hand if statements
+            //increase chr ascii code by 1 then mod {97("a" ascii) + 26 letters}
+            chr = rxAlpha.test(chr) ? String.fromCharCode(((chr.charCodeAt(0) + 1) % (97 + 26))) : chr;
+            chr = rxVowel.test(chr) ? chr.toUpperCase() : chr;
+
+            return chr;
+        }).join('');
+    }).join(' ');
+}

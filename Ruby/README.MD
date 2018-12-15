@@ -529,6 +529,45 @@ end
 
 + The number of instances can be retrieved with `Car.instances`. 
 
+## Inheritance
+
+The ability of a specialized sub-class to inherit the instance variables and methods of a super class.
+
+
+Consider a super class:
+
+```ruby
+
+class Vehicle
+	def initialize(manufacturer)
+		@manufacturer=manufacturer
+	end
+
+	attr_reader :manufacturer
+	attr_writer :manufacturer
+
+	def to_s
+		return "Manufacturer: " + @manufacturer.to_s
+	end
+end
+```
+
++ `<` is used when defining a subclass.
++ `super()` - a call that will get from the initialization details of of a super class.  
+
+
+```ruby
+class Car < Vehicle
+	def initialize(manufacturer, type)
+		super(manufacturer)
+		@type=type
+	end
+
+	def to_s
+		return super + " Car type: " + @type
+	end
+end
+```
 
 
 [side_effect]: "https://softwareengineering.stackexchange.com/questions/40297/what-is-a-side-effect"
