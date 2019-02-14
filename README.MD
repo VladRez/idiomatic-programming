@@ -6,7 +6,13 @@ variables such as integers and booleans. Ruby is completely interpreted and isn'
 intermediary language like C#/VB or java. Completely cross-platform and most recognized for its use in
 Ruby on Rails framework. 
 
-+ [basics][basics]
++ [Basics][basics]
+    + Outputting and Displaying Data
+    + Variables
+    + Data Types
+    + Expressions
+    + Data Structures
+    + Control Structures
 
 
 [basics]: ruby/ruby-basics.md

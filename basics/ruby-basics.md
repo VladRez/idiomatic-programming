@@ -1,4 +1,4 @@
-# Outputting Data
+# Outputting and Displaying Data
 
 * `puts("text")` displays user data to the shell
     * This method adds a newline `\n` at the end.
@@ -24,6 +24,7 @@
     * Constant variables are written in all caps, `RATE = 0.345`
         * Easily recognized, or called out.
         * Constants CAN be changed throughout the application life.
+
 ## Ruby Specific feature
 
 * Chain assignment:
@@ -131,8 +132,10 @@ city, state, country = "SF,CA,USA".split(',')
     * `!true` returns `false`.
     * `!!true` returns `true`.
 
-## Expressions
-### Relational Operators
+# Expressions
+
+## Relational Operators
+
 * Valid relational Operators: `>, =>, <, <=, ==` .
 * Comparable Operator `<=>`
     * Relative comparison returns 1 or 0 or -1
@@ -141,7 +144,8 @@ city, state, country = "SF,CA,USA".split(',')
         * return 0 if A = B
         * return -1 if A < B
         * return `nil` if not comparable. 
-### Logical Operators
+
+## Logical Operators
 
 * Combine multiple expressions with valid Logical Operators:
     * `and`, `or`, `not`
@@ -185,9 +189,9 @@ items = {
     
 
 <!-- ## Relational Expressions -->
-## Control Structures
+# Control Structures
 
-### Decision Structure
+## Decision Structure
 
 * `if`
 
