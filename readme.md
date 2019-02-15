@@ -14,7 +14,8 @@ Ruby on Rails framework.
     + Data Structures
     + Control Structures
 
++ [Object Oriented Design & Programming][oop]
 
-[basics]: ruby/ruby-basics.md
-
+[basics]: basics/ruby-basics.md
+[oop]: 
 
