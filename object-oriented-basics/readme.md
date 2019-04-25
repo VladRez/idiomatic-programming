@@ -1,6 +1,6 @@
 # Inheritance
 
-It's a porgramming concept of integrating two classes with an is-a relationship. 
+It's a programming concept of integrating two classes with an is-a relationship. 
 
 
 Specifying common traits for different objects:
