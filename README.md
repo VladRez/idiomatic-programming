@@ -27,7 +27,7 @@ garbage collected memory management. Almost everything is an object including wh
     + Primitive Obsession
 
 
-[basics]: basic-usage/R
+[basics]: basic-usage/
 [oop]: object-oriented-basics/
 [codesmells]: code-smells/
 
