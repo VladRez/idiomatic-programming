@@ -27,7 +27,7 @@ garbage collected memory management. Almost everything is an object including wh
     + Primitive Obsession
 
 
-[basics]: basic-usage/
-[oop]: object-oriented-basics/
+[basics]: basic-ruby/
+[oop]: object-oriented-ruby/
 [codesmells]: code-smells/
 

@@ -1,10 +1,10 @@
-# In a static webpage
+### A static webpage
 
 1. The browser sends an HTTP request to a web server.
 2. The web server finds the appropriate *.html file.
 3. The web server sends a response back to the web browser.
 
-In a Rails App MVC
+### Rails MVC App
 
 1. The browser issues a request (an incoming URL, e.g. `website.com/users`) to the web server 
     + HTTP verbs `GET`, `POST`, `PATCH`, `DELETE`
