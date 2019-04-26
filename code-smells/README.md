@@ -116,7 +116,7 @@ class Game
 end
 ```
 
-## Longe Methods
+## Long Methods
 
 When you have a method that's more than 8-10 (6 - 8) in ruby. You may be doing something wrong.
 
