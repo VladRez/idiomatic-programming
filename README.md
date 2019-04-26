@@ -11,13 +11,13 @@ garbage collected memory management. Almost everything is an object including wh
     + Data Structures
     + Control Structures
 
-+ [Object Oriented Design & Programming][oop]
++ [Object Oriented Programming][oop]
     + Inheritance
     + Encapsulation
     + Polymorphism
     + Duck Typing  
 
-+ [Common Bad Design and Practices][codesmells]
++ [Common Bad Practices][codesmells]
     + Comments
     + Duplicate Code
     + Data clump
