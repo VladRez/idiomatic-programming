@@ -1,3 +1,93 @@
+
+# Active Records
+
+## Domain Modeling
+
+Consider we want to create an academic institution (a school) website where students can log and track their progress.
+
+```
+Institution
+    * Name
+Student
+    * First Name
+    * Last Name
+    * Institution
+Course
+    * Name
+    * Institution
+    * Units
+Assignments
+    * Course
+    * Student
+    * Date Assigned
+    * Number of Hours
+```
+We want to create the database to store the information by running:
+
+```sh
+rake db:create
+# or
+rails db:create
+```
+
+### Migrations
+```sh
+# Singular and Capitalized
+# g for generate
+rails g model Institution
+```
+
+A model creates
+
+```
+    invoke  active_record
+    create    db/migrate/20190512203209_create_institutions.rb 
+    create    app/models/institution.rb 
+    invoke    test_unit
+    create      test/models/institution_test.rb
+    create      test/fixtures/institutions.yml
+```
+
+`create    db/migrate/20190512203209_create_institutions.rb` refers to the file: 
+    + The number is a timestamp in which the migration was created.
+```ruby
+class CreateInstitutions < ActiveRecord::Migration[5.2]
+  def change
+    # Create a table
+    create_table :institutions do |t|
+      t.string :name # Add a field to the table named 
+      # 'name` of type string
+      t.timestamps
+    end
+  end
+end
+```
+
+```
+rake db:migrate
+# or
+rails db:migrate
+```
+
+Here we are implying that a student model belongs to an institution. Because this is a database backed applications we want to user a foreign-key type relationship, which is the primary key the institution belongs to.
+```ruby
+class CreateStudents < ActiveRecord::Migration[5.2]
+  def change
+    create_table :students do |t|
+      t.string :fname
+      t.string :lname
+      t.integer :institution_id
+      t.timestamps
+    end
+  end
+end
+```
+
+<!-- ## Associations -->
+
+
+## Summary
+
 ### A static webpage
 
 1. The browser sends an HTTP request to a web server.
