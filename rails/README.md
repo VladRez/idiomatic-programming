@@ -3,88 +3,70 @@
 
 ## Domain Modeling
 
-Consider we want to create an academic institution (a school) website where students can log and track their progress.
+### Models
 
-```
-Institution
-    * Name
-Student
-    * First Name
-    * Last Name
-    * Institution
-Course
-    * Name
-    * Institution
-    * Units
-Assignments
-    * Course
-    * Student
-    * Date Assigned
-    * Number of Hours
-```
-We want to create the database to store the information by running:
-
-```sh
-rake db:create
-# or
-rails db:create
-```
-
-### Migrations
-```sh
-# Singular and Capitalized
-# g for generate
-rails g model Institution
-```
-
-A model creates
-
-```
-    invoke  active_record
-    create    db/migrate/20190512203209_create_institutions.rb 
-    create    app/models/institution.rb 
-    invoke    test_unit
-    create      test/models/institution_test.rb
-    create      test/fixtures/institutions.yml
-```
-
-`create    db/migrate/20190512203209_create_institutions.rb` refers to the file: 
-    + The number is a timestamp in which the migration was created.
+A model represents an entity in a Rails application used to Create, Read, Update and Delete (CRUD) entries in a database.
++ A model is a Ruby class
+    + Model name is singular by convention
 ```ruby
-class CreateInstitutions < ActiveRecord::Migration[5.2]
-  def change
-    # Create a table
-    create_table :institutions do |t|
-      t.string :name # Add a field to the table named 
-      # 'name` of type string
-      t.timestamps
+class Book < ApplicationRecord
+    #...
+end
+
+# Which inherits from
+class ApplicationRecord < ActiveRecord::Base
+    self.abstract_class = true
+end
+```
++ By convention the table name is **plural** because it contains many records/rows.
+
+The `Book` Model gives us access to the `books` table, effectively wrapping the table to for CRUD access.
++ The class attributes match the column names.
+___
+**books** table
+
+|id|title|author|
+|--|-----|------|
+|1 |ruby|Yukihiro Matsumoto|
+|2 |javascript|Brendan Eich|
+|3 |python|Guido van Rossum|
+___
+
+We create a `books` database to store all our books and a `book` model to access the table.
+
++  Creating a Model `rails generate [singular model name]`
+    
+
+`db/migrate/{timestamp}_create_{model}.rb` creates a migration file
+
+```ruby
+class CreateBooks < ActiveRecord::Migration[5.2]
+    # Rails will call this method to make database scheme changes
+        # This will properly convert field types to match database in use (mysql, postgres, sqlite, etc...)
+    def change
+        create_table :books do |t|
+            #...
+            t.timestamps
+        end
     end
-  end
 end
 ```
 
-```
-rake db:migrate
-# or
-rails db:migrate
-```
+`app/models/{model name}.rb` the model itself 
 
-Here we are implying that a student model belongs to an institution. Because this is a database backed applications we want to user a foreign-key type relationship, which is the primary key the institution belongs to.
 ```ruby
-class CreateStudents < ActiveRecord::Migration[5.2]
-  def change
-    create_table :students do |t|
-      t.string :fname
-      t.string :lname
-      t.integer :institution_id
-      t.timestamps
-    end
-  end
+class Book < ApplicationRecord
+
+end
+# which in turn inherits from
+class ApplicationRecord < ActiveRecord::Base
+
 end
 ```
 
-<!-- ## Associations -->
+#### Migrations
 
+Once the instructions for creating database is created, next we run the migrations.
 
 ## Summary
 
@@ -102,7 +84,7 @@ end
     + configured in in `config/routes.rb`
 3. The router sends the request to a specific action in the `Controller`
     + The `Controller` is simply a ruby class and the `action` is a ruby method that handles the request.
-    + Example of mapping a request to a controller action: `get "users" => "users#index"`
+    + Example of mapping a `GET` request to a controller action: `get "users" => "users#index"`
     + To create a controller `rails g controller [controller name]`
         + `rails g controller Users`
         + creates a new controller file in `app/controllers/users_controller.rb`
@@ -159,8 +141,8 @@ end
 5. The `Controller` sends data to the `View` 
     + located in `app/view/users/`
     + `View` renders html with `*.html.erb` template.
-        + `<% ruby_method %>` executes ruby code without a return value.
-        + `<%= ruby_method %>` executes ruby code and returns a value.
+        + `<% ruby_method %>` tags executes ruby code without a return value.
+        + `<%= ruby_method %>` tags executes ruby code and returns a value.
 6. Send result back to the browser as a response.
 
 The controller acts as an intermediary between `Model` and `View`
