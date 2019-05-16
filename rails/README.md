@@ -1,5 +1,86 @@
 
+# A static webpage
+
+1. The browser sends an HTTP request to a web server.
+2. The web server finds the appropriate *.html file.
+3. The web server sends the response back and the web browser renders it.
+
+# Rails MVC App
+
+1. The browser issues a request (an incoming URL, e.g. `website.com/users`) to the web server 
+    + HTTP verbs `GET`, `POST`, `PATCH`, `DELETE`
+2. The web server receives the request and then passes it to the `Router`
+    + configured in in `config/routes.rb`
+3. The router sends the request to a specific action in the `Controller`
+    + The `Controller` is simply a ruby class and the `action` is a ruby method that handles the request.
+    + Example of mapping a `GET` request to a controller action: `get "users" => "users#index"`
+    + To create a controller `rails g controller [controller name]`
+        + `rails g controller Users`
+        + creates a new controller file in `app/controllers/users_controller.rb`
+        + controller name is plural by convention
+        + `UsersController` class inherits from a base class of all controllers called `ApplicationController`
+
+
+```ruby
+class UsersController < ApplicationController
+    def index
+        # ...
+    end
+end
+```
+4. `Controller` interacts with a `Model` class.
+    + `Model` represents a real world concept, such as a user on a website. 
+        + provides an easier way to be read, update and create entries from a database table.
+        + Runs application logic
+        + Created with `rails g model [model name]`
+            + `rails g model User username:string email:string`
+            + Generates a database schema in `db/migrate/`
+
+```ruby
+class CreateUsers < ActiveRecord::Migration
+    def change
+        create_table :users do |t|
+            t.string :username #adding a column to the table
+            t.string :email
+
+            t.timestamps
+        end
+    end
+end
+```
++ Run `rails`/`rake db:migrate` to create the table.
++ The `User` `Model` will automatically gives us access to the `Users` table
+
+```ruby
+    class User < ActiveRecord
+        # ...
+    end
+```
+    
++ Each row act as an object
+
+|id|username|email|
+|--|--------|-----|
+|1|oddball|ob9@yahoo.net|
+|2|wizard|wzd2@gmail.com|
+|3|magma|mma14@live.io|
+   
+     
+
+5. The `Controller` sends data to the `View` 
+    + located in `app/view/users/`
+    + `View` renders html with `*.html.erb` template.
+        + `<% ruby_method %>` tags executes ruby code without a return value.
+        + `<%= ruby_method %>` tags executes ruby code and returns a value.
+6. Send result back to the browser as a response.
+
+The controller acts as an intermediary between `Model` and `View`
+
 # Active Records
+
+The `rake` utility automates common tasks in Rails. 
++ `rails - T` / `rake -T` will show available tasks.
+
 
 ## Domain Modeling
 
@@ -45,7 +126,7 @@ class CreateBooks < ActiveRecord::Migration[5.2]
         # This will properly convert field types to match database in use (mysql, postgres, sqlite, etc...)
     def change
         create_table :books do |t|
-            #...
+            t.string :title
             t.timestamps
         end
     end
@@ -56,11 +137,12 @@ end
 
 ```ruby
 class Book < ApplicationRecord
-
+    # implicit access to table fields
+    # attr_accessor :title
 end
 # which in turn inherits from
 class ApplicationRecord < ActiveRecord::Base
-
+    # inherits methods such as count, find, find_by
 end
 ```
 
@@ -68,82 +150,36 @@ end
 
 Once the instructions for creating database is created, next we run the migrations.
 
-## Summary
++ `rails db:migrate` run the migration and create the tables in the database.
++ `rails db:migrate:status` show the status of the migration
 
-### A static webpage
+### Rails Console
 
-1. The browser sends an HTTP request to a web server.
-2. The web server finds the appropriate *.html file.
-3. The web server sends a response back to the web browser.
+`rails c` loads up a rails console environment that lets you interact with the models without a web browser. 
 
-### Rails MVC App
+If we declare a model `Book` rails will show it's connection to the database by displaying the table fields as class attributes. This is because the model inherits from `ActiveRecord::BASE`
 
-1. The browser issues a request (an incoming URL, e.g. `website.com/users`) to the web server 
-    + HTTP verbs `GET`, `POST`, `PATCH`, `DELETE`
-2. The web server receives the request and then passes it to the `Router`
-    + configured in in `config/routes.rb`
-3. The router sends the request to a specific action in the `Controller`
-    + The `Controller` is simply a ruby class and the `action` is a ruby method that handles the request.
-    + Example of mapping a `GET` request to a controller action: `get "users" => "users#index"`
-    + To create a controller `rails g controller [controller name]`
-        + `rails g controller Users`
-        + creates a new controller file in `app/controllers/users_controller.rb`
-        + controller name is plural by convention
-        + `UsersController` class inherits from a base class of all controllers called `ApplicationController`
++ `book = Book.new()` instantiates an empty record object
+    + `book.title = "ruby"` assign a value to an object's attribute 
+    + `book.save` save the object as a record to the database
+        + sql: `INSERT INTO "books" ("title") VALUES (?) ["title", "ruby"]`
++ `book = Book.create(title: "")` will instantiates and save a new record
+    + sql: `INSERT INTO "books" ("title") VALUES (?) ["title", "ruby"]`
++ `Book.count` - returns the number of entries
+    + sql `SELECT count(*) FROM "books"`
++ `Book.all` - returns an array of entries as objects
+    + sql: `SELECT "books".* FROM "books"`
++ `Book.first` - returns the first entry in the table
+    + sql: `SELECT "books".* FROM "books" ORDER BY "books"."id" DESC LIMIT 1`
++ `Book.find_by(1)` where `1` is the key, search for record by id.
+    + sql: `SELECT "books".* FROM "books" WHERE "books"."id" = ? LIMIT 1 [["id"], 1]`
+    + `ActiveRecord::RecordNotFound:` error will occur when passed a key that doesn't exist.
++ `Book.find_by(title: "ruby")` find by hash `attribute: value`
+    + sql: `SELECT "books" FROM "books"."title" = 'ruby' LIMIT 1`
+    + returns `nil` if a record is not found
++ `Book.update(title: "js")` update multiple fields/attributes with a hash
+    + sql: `UPDATE "books" SET "title" = ? WHERE "books"."id" = 3 [["title, "js"]]`
++ `Books.find(1).destroy` to delte from the table
+    + sql: `DELETE FROM "books" WHERE "books"."id" = ? [["id", 4]]`
 
-
-```ruby
-class UsersController < ApplicationController
-    def index
-        # ...
-    end
-end
-```
-4. `Controller` interacts with a `Model` class.
-    + `Model` represents a real world concept, such as a user on a website. 
-        + provides an easier way to be read, update and create entries from a database table.
-        + Runs application logic
-        + Created with `rails g model [model name]`
-            + `rails g model User username:string email:string`
-            + Generates a database schema in `db/migrate/`
-
-```ruby
-class CreateUsers < ActiveRecord::Migration
-    def change
-        create_table :events do |t|
-            t.string :username #adding a column to the table
-            t.string :email
-
-            t.timestamps
-        end
-    end
-end
-```
-+ Run `rails`/`rake db:migrate` to create the table.
-+ The `User` `Model` will automatically gives us access to the `Users` table
-
-```ruby
-    class User < ActiveRecord
-        # ...
-    end
-```
-    
-+ Each row act as an object
-
-|id|username|email|
-|--|--------|-----|
-|1|oddball|ob9@yahoo.net|
-|2|wizard|wzd2@gmail.com|
-|3|magma|mma14@live.io|
-   
-     
-
-5. The `Controller` sends data to the `View` 
-    + located in `app/view/users/`
-    + `View` renders html with `*.html.erb` template.
-        + `<% ruby_method %>` tags executes ruby code without a return value.
-        + `<%= ruby_method %>` tags executes ruby code and returns a value.
-6. Send result back to the browser as a response.
-
-The controller acts as an intermediary between `Model` and `View`
 
