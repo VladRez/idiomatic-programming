@@ -13,7 +13,7 @@ When a web browser communicate with a web server:
 
 HTTP request message composed of:
 
-a. Request Message header
++ **Request Message header**
     + Request Line
         + *request-method-name* HTTP protocol defines a set of request methods
             + `GET` - get a web resource from the server
@@ -30,13 +30,13 @@ a. Request Message header
     + Request Headers
         + name:value pairs
         + `request-header-name: request-header-value1, request-header-value2, ...`
-b. A blank line to separate request message header and request message body
-c. Optional Request Message body
++ **A blank line to separate request message header and request message body**
++ **Optional Request Message body**
 
 HTTP request 
 ```sh
 GET /path/index.html HTTP/1.1  <- Request line | < Request Message Header
-Host: www.website.com    | < Request Headers    | 
+Host: www.website.com   | <- Request Headers   | 
 User-Agent: Chrome      |
                         | <- Blank line
 bookId=21345&title=ruby | <- Request Message Body
@@ -49,7 +49,7 @@ bookId=21345&title=ruby | <- Request Message Body
 
 HTTP response message composed of:
 
-a. Response Message:
++ **Response Message:**
     + Response Message Header
         + Status Line
             + *HTTP-version*
@@ -65,11 +65,11 @@ a. Response Message:
                 + `Not Found`
                 + `Forbidden`
                 + `Internal Server Error`
-        + Response Header
+        + **Response Header**
             + name:value pairs
             + `response-header-name: response-header-value1, response-header-value2, ...`
-b. Separated by a blank line
-c. Optional Response Message Body
++ **Separated by a blank line**
++ **Optional Response Message Body**
 
 ```sh
 HTTP/1.1 200 OK                     | <- Status Line        | <- Response Message Header
@@ -124,8 +124,8 @@ class CreateUsers < ActiveRecord::Migration
     end
 end
 ```
-+ Run `rails`/`rake db:migrate` to create the table.
-+ The `User` `Model` will automatically gives us access to the `Users` table
++ Run `rails`/`rake db:migrate` to create or update the table schema.
++ The `User` Model will automatically gives us access to the `Users` table
 
 ```ruby
     class User < ActiveRecord
@@ -142,9 +142,8 @@ end
 |3|magma|mma14@live.io|
    
      
-
 5. The `Controller` sends data to the `View` 
-    + located in `app/view/users/`
+    + located in `app/view/users/index.html.erb`
     + `View` renders html with `*.html.erb` template.
         + `<% ruby_method %>` tags executes ruby code without a return value.
         + `<%= ruby_method %>` tags executes ruby code and returns a value.
@@ -156,7 +155,6 @@ The controller acts as an intermediary between `Model` and `View`
 
 The `rake` utility automates common tasks in Rails. 
 + `rails - T` / `rake -T` will show available tasks.
-
 
 ## Domain Modeling
 
@@ -305,19 +303,15 @@ end
 ```
 ## Helpers
 
-In the context of Rails console we have a `helper` to provide helpful methods such as formatting, text, numbers and dates for the views. This `helper` object is implicitly available in the views.
+In the context of Rails console we have a `helper` object to provide helpful methods such as formatting, text, numbers and dates for the views. This `helper` object is implicitly available in the views.
 
 More helpers can be create included in `app/helpers/books_helper.rb`
 
 ```ruby
 module EventsHelper
     def format_title(title)
-        title.upcase
+        # content_tag: helper method to generate html
+        content_tag(:h1, title.upcase)
     end
 end
 ```
-
-+ `content_tag` helper method to generate html.
-    + `content_tag(:p, "description")`
-
-<!-- ## Initializer -->
