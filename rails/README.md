@@ -294,24 +294,73 @@ If we declare a model `Book` rails will show it's connection to the database by 
 Since models are classes methods can be written to help indivual instances.
 
 ```ruby
-class Event < ApplicationRecord
+class Book < ApplicationRecord
     def blank_book?
         self.pages == 0
     end
 end
 
 ```
-## Helpers
+### Helpers
 
 In the context of Rails console we have a `helper` object to provide helpful methods such as formatting, text, numbers and dates for the views. This `helper` object is implicitly available in the views.
 
 More helpers can be create included in `app/helpers/books_helper.rb`
 
 ```ruby
-module EventsHelper
+module BooksHelper
     def format_title(title)
         # content_tag: helper method to generate html
         content_tag(:h1, title.upcase)
     end
 end
 ```
+
+## Routing
+
+Routes connect HTTP requests to controller actions.
+
+`config/routes.rb`
+```ruby
+Rails.application.routes.draw do
+    # routes a GET request to the index action in the books controller 
+    get "books" => "books#index"
+    # routes a GET to the show action, explicit id
+    get "books/1" => "books#show"
+
+    get "books/:id" => "books#show"
+    #or
+    # get "books/show"
+    #or
+    # books = {books: "books#index"}
+    # get(books)
+end
+
+```
+
+When we point our web browser to a web resource this gets sent to 
+
+To have access to books or a book we must define the actions in the controllers:
+
+```ruby
+class BooksController < ApplicationController
+    def index
+        @books = Book.all
+    end
+
+    def show
+        @book = Book.find(1)
+    end
+end
+```
+
+
+|HTTP method|Path|Controller Action|Description|
+|-----------|----|-----------------|-----------|
+|GET|/books|books#index|Present a list of books|
+|GET|/books/new|books#new|Present HTML form for creating a book|
+|POST|/books|books#create|Create a new book|
+|GET|/books/:id|books#show|Present a specific book|
+|GET|/books/:id/edit|books#edit|Present HTML form for editing a book|
+|PATCH/PUT|/books/:id|books#update|Update a specific book|
+|DELETE|/books/:id|books#destroy|Delete a specific book|
