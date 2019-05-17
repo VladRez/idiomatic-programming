@@ -1,9 +1,51 @@
 
-# A static webpage
+# HTTP requests
 
+When a web browser tries to communicate with a web server it does transforming a URL into a *request* message . 
+
+This is done using Hypertext Transfer Protocol (HTTP), `http://` functions as a request-response protocol. 
+
+Static web page
 1. The browser sends an HTTP request to a web server.
+    + URL is translated to a *request* message.
+    + URL: `protocol://hostname:port/path-to-file`
+        + `protocol` - HTTP, FTP, ...
+        + `hostname` - DNS domain name (www.google.com) or ip address (127.0.0.1) 
+        + `port` - TCP port the server is listening for requests
+        + `path-to-file` - name and location of the requested resource
 2. The web server finds the appropriate *.html file.
 3. The web server sends the response back and the web browser renders it.
+
+HTTP request message composed of:
+
+1. Request Message header
+    a. Request Line
+        + *request-method-name* HTTP protocol defines a set of request methods
+            + `GET`
+            + `POST`
+            + `HEAD`
+            + `OPTIONS`
+        + *request-URI* - specifies the resource requested
+        + *HTTP-version*
+            + `HTTP/1.0`
+            + `HTTP/1.1`    
+    b. Request Headers
+        + for of name:value pairs
+        + `request-header-name: request-header-value1, request-header-value2, ...`
+2. A blank line to seperate
+3. Optional Request Message body
+
+HTTP request 
+```sh
+GET /path/index.html HTTP/1.1  <- Request line | < Request Message Header
+Host: www.google.com    | < Request Headers    | 
+User-Agent: Chrome      |
+                        | <- Blank line
+bookId=21345&title=ruby | <- Request Message Body
+
+```
+
+
 
 # Rails MVC App
 
@@ -148,10 +190,44 @@ end
 
 #### Migrations
 
-Once the instructions for creating database is created, next we run the migrations.
+Generating an model creates a migration file, this file that acts as a audit trail for changes in the database schema. By following certain conventions Rails will automatically generate code.
+
++ `rails generate model book title:string pages:integer`
+
+```ruby
+class CreateBooks < ActiveRecord::Migration[5.2]
+    def change
+        create_table :books do |t|
+            # type,    column
+            t.string :title
+            t.integer :pages
+            t.timestamps
+        end
+    end
+end
+```
+
+Next we run the migrations.
 
 + `rails db:migrate` run the migration and create the tables in the database.
 + `rails db:migrate:status` show the status of the migration
+
+If we wanted to update the schema, for example add a column:
++ `rails g migration AddFieldsToBooks author:string description:text`
+    
+Rails will generate the migration 
+
+```ruby
+class AddFieldsToBooks < ActiveREcord::Migration[5.2]
+    def change
+        #           table   column  type
+        add_column :books, :author, :string
+        add_column :books, :description, :text
+    end
+end
+```
++ `rails db:migrate` to apply changes
+    + `rails c` use rails console to test changes
 
 ### Rails Console
 
@@ -183,3 +259,31 @@ If we declare a model `Book` rails will show it's connection to the database by 
     + sql: `DELETE FROM "books" WHERE "books"."id" = ? [["id", 4]]`
 
 
+Since models are classes methods can be written to help indivual instances.
+
+```ruby
+class Event < ApplicationRecord
+    def blank_book?
+        self.pages == 0
+    end
+end
+
+```
+## Helpers
+
+In the context of Rails console we have a `helper` to provide helpful methods such as formatting, text, numbers and dates for the views. This `helper` object is implicitly available in the views.
+
+More helpers can be create included in `app/helpers/books_helper.rb`
+
+```ruby
+module EventsHelper
+    def format_title(title)
+        title.upcase
+    end
+end
+```
+
++ `content_tag` helper method to generate html.
+    + `content_tag(:p, "description")`
+
+<!-- ## Initializer -->
