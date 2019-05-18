@@ -326,8 +326,7 @@ Rails.application.routes.draw do
     # routes a GET request to the index action in the books controller 
     get "books" => "books#index"
     # routes a GET to the show action, explicit id
-    get "books/1" => "books#show"
-
+    #get "books/1" => "books#show"
     get "books/:id" => "books#show"
     #or
     # get "books/show"
@@ -338,10 +337,9 @@ end
 
 ```
 
-When we point our web browser to a web resource this gets sent to 
+when pointing to a web resource the URL parameters are automatically captured in a hash called `params`. This hash is accessible in any action.
 
-To have access to books or a book we must define the actions in the controllers:
-
+`localhost:3000/books/1` is functionally the same as `Book.find(1)` we have a generic way to find any id in the url
 ```ruby
 class BooksController < ApplicationController
     def index
@@ -349,11 +347,13 @@ class BooksController < ApplicationController
     end
 
     def show
-        @book = Book.find(1)
+        # `localhost:3000/books/1`
+        @book = Book.find(params[:id])
     end
 end
 ```
 
+URL PATH - > ROUTES - > CONTROLLER -> ACTION
 
 |HTTP method|Path|Controller Action|Description|
 |-----------|----|-----------------|-----------|
@@ -364,3 +364,4 @@ end
 |GET|/books/:id/edit|books#edit|Present HTML form for editing a book|
 |PATCH/PUT|/books/:id|books#update|Update a specific book|
 |DELETE|/books/:id|books#destroy|Delete a specific book|
+
