@@ -416,11 +416,136 @@ Both are interchangeable and link to a route
 
 However not all actions have route names and have to be explicitly created
 
+```
+> rails routes
+Prefix Verb URI Pattern         Controller#Action
+books GET /books(.:format)    books#index
+      GET /books/:id          books#show
+```
+Add a rout to an individual book page:
 
 `config/routes.rb`
 ```ruby
 Rails.application.routes.draw do
+    #root "books#index" redirect root page to index action in books controller
     get "books" => "books#index"
-    get "books/:id" => "books#show", as: "book"
+    get({"books/:id" => {to: "books#show", as: "book"}}) #<
 end
+```
+
+```
+> rails routes
+Prefix Verb URI Pattern         Controller#Action
+books GET /books(.:format)    books#index
+book  GET /books/:id          books#show
+```
+
+Since the route now has a placeholder `:id` we need to supply the `book` id to a helper method as a parameter
+
+rails console
+```
+>> app.book_path(1)
+=> "/books/1"
+>> app.book_url(1)
+=> "http://www.example.com/books/1"
+>> b = Book.first
+>> app.boo,_path(b.id)
+=> "/books/1"
+>> app.event_path(b)
+=> "events/1"
+```
+
+Views: `app/views/books/index.html.erb`
+
+```html
+<ul>
+    <% @books.each do |b| %>
+        <li><%= link_to(b.name, book_path(b.id)) %></li>
+        <!--
+           In this Context:
+            
+            Rails convention to shorthand b.id
+            <%= link_to(b.name, book_path(b)) %>
+
+            Rails convention to shorthand book_path(b.id)
+            <%= link_to(b.name, b) %>
+        -->
+    <% end %>
+</ul>
+```
+
+|Route Name|HTTP|URL pattern|controller#action|Helper Method|Generates|
+|-----------|----|-----------|-----------------|-------------|---------|
+|books|GET|/books(.:format)|books#index|books_url|http://www.example.com/books|
+|books|GET|/books(.:format)|books#index|books_path|/books|
+|book|GET|/book/:id(.:format)|book#show|book_url(1)|http://www.example.com/book/1|
+|book|GET|/book/:id(.:format)|book#show|book_path(1)|/book/1|
+
+### Forms
+
+Forums are used when creating/updating a record.
+
+#### Updating
+
+Edit hyperlink -> route to /book/1/edit -> book(controller)#edit(action) -> render view
+
++ `config/routes.rb`
+
+```ruby
+    get "books" => "books#index"
+    get "books/:id" => "books#show", as: "book" 
+    get "books/:id/edit" => "books#edit", as: "edit_book"
+```
+
++ `rails routes`
+
+```
+Prefix Verb URI Pattern                 Controller#Action
+books       GET /books(.:format)            books#index
+book        GET /books/:id(.:format)        books#show
+edit_book   GET /books/:id/edit(.:format)   books#edit
+```
+
++ `rails c`
+```
+>> app.edit_book_path(1)
+=> 'book/1/edit/`
+```
+
++ Create a link in the show to the edit action `app/view/books/show.html.erb`
+
+```html
+<%= link_to("Edit", edit_book_path(@book.id)) %>
+```
+
++ `app/controller/books_controller.rb`
+
+```ruby
+class BooksController < ApplicationController
+    def index
+        @books = Book.all
+    end
+
+    def show
+        @book = Book.find(params[:id])
+    end
+
+    def edit
+    #Here we want to setup an @book instance variable to look for the book to edit
+        # @book variable is used to pre-fill form data
+        @book = Book.find(params[:id])
+            # we can find by :id because there is a place holder in the route for :id
+    end
+end
+```
+
++ `app/views/books/edit.html.erb`
+    + using `form_for` helper to generate forms
+```html
+<%= form_for(@book) do |f| %>
+    <%= f.label :name%>
+    <%= f.text_field :name%>
+
+    <%= f.submit %>
+<% end %>
 ```
