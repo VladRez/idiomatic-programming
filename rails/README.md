@@ -86,7 +86,7 @@ Content-Type: text/html             |                       |
 1. The browser issues a request (an incoming URL, e.g. `website.com/users`) to the web server 
     + HTTP request `GET`, `POST`, `PATCH`, `DELETE`
 2. The web server receives the request and then passes it to the `Router`
-    + configured in in `config/routes.rb`
+    + configured in `config/routes.rb`
 3. The router sends the request to a specific action in the `Controller`
     + The `Controller` is simply a ruby class and the `action` is a ruby method that handles the request.
     + Example of mapping a `GET` request to a controller action: `get "users" => "users#index"`
@@ -175,7 +175,7 @@ end
 ```
 + By convention the table name is **plural** because it contains many records/rows.
 
-The `Book` Model gives us access to the `books` table, effectively wrapping the table to for CRUD access.
+The `Book` Model gives us access to the `books` table, effectively wrapping the table for CRUD access.
 + The class attributes match the column names.
 ___
 **books** table
@@ -187,7 +187,7 @@ ___
 |3 |python|Guido van Rossum|
 ___
 
-We create a `books` database to store all our books and a `book` model to access the table.
+We create a `books` database to store all our books and a `Book` model to access the table.
 
 +  Creating a Model `rails generate [singular model name]`
     
@@ -196,7 +196,7 @@ We create a `books` database to store all our books and a `book` model to access
 
 ```ruby
 class CreateBooks < ActiveRecord::Migration[5.2]
-    # Rails will call this method to make database scheme changes
+    # Rails will call 'change' method to make database scheme changes
         # This will properly convert field types to match database in use (mysql, postgres, sqlite, etc...)
     def change
         create_table :books do |t|
@@ -222,7 +222,7 @@ end
 
 #### Migrations
 
-Generating an model creates a migration file, this file that acts as a audit trail for changes in the database schema. By following certain conventions Rails will automatically generate code.
+Generating a model creates a migration file, this file that acts as a audit trail for changes in the database schema. By following certain conventions Rails will automatically generate code:
 
 + `rails generate model book title:string pages:integer`
 
@@ -279,7 +279,7 @@ If we declare a model `Book` rails will show it's connection to the database by 
     + sql: `SELECT "books".* FROM "books"`
 + `Book.first` - returns the first entry in the table
     + sql: `SELECT "books".* FROM "books" ORDER BY "books"."id" DESC LIMIT 1`
-+ `Book.find_by(1)` where `1` is the key, search for record by id.
++ `Book.find_by(id: 1)` where `1` is the key, search for record by id.
     + sql: `SELECT "books".* FROM "books" WHERE "books"."id" = ? LIMIT 1 [["id"], 1]`
     + `ActiveRecord::RecordNotFound:` error will occur when passed a key that doesn't exist.
 + `Book.find_by(title: "ruby")` find by hash `attribute: value`
@@ -291,7 +291,7 @@ If we declare a model `Book` rails will show it's connection to the database by 
     + sql: `DELETE FROM "books" WHERE "books"."id" = ? [["id", 4]]`
 
 
-Since models are classes methods can be written to help indivual instances.
+Since models are classes, methods can be written to help individual instances.
 
 ```ruby
 class Book < ApplicationRecord
@@ -305,7 +305,7 @@ end
 
 In the context of Rails console we have a `helper` object to provide helpful methods such as formatting, text, numbers and dates for the views. This `helper` object is implicitly available in the views.
 
-More helpers can be create included in `app/helpers/books_helper.rb`
+More helpers can be created in `app/helpers/books_helper.rb`
 
 ```ruby
 module BooksHelper
@@ -336,10 +336,12 @@ Rails.application.routes.draw do
 end
 
 ```
+### Linking Routes
 
-when pointing to a web resource the URL parameters are automatically captured in a hash called `params`. This hash is accessible in any action.
+ URL links are automatically captured in a hash called `params` and accessible within any action.
 
-`localhost:3000/books/1` is functionally the same as `Book.find(1)` we have a generic way to find any id in the url
+`http://www.website.com/books/1` is functionally the same as `Book.find(1)` or `Book.find_by(id: 1)` because the URI is captured as `{id: 1}`. 
+
 ```ruby
 class BooksController < ApplicationController
     def index
@@ -348,6 +350,7 @@ class BooksController < ApplicationController
 
     def show
         # `localhost:3000/books/1`
+            # Gives us a generic way to find any id
         @book = Book.find(params[:id])
     end
 end
@@ -365,3 +368,59 @@ URL PATH - > ROUTES - > CONTROLLER -> ACTION
 |PATCH/PUT|/books/:id|books#update|Update a specific book|
 |DELETE|/books/:id|books#destroy|Delete a specific book|
 
+
+## URI Paths
+
+Display all available routes:
++ In a web broser
+    + `localhost:3000/rails/info/routes` 
++ In Terminal: `Rails` / `Rake` `routes`   
+```
+> rails routes
+Prefix Verb URI Pattern         Controller#Action
+books GET /books(.:format)    books#index
+      GET /books/:id          books#show
+```
+
+
+Creating dynamic links between routes:
+
++ `link_to(friendly_name, route)` - rails method to create a hyperlinks to a route
+    + In views `<%= link_to("All Books","/books") %>` same as `<a href="/books">All Books</a>` 
+
+```html
+<ul>
+    <% @books.each do |book| %>
+        <li><%= link_to(book.name, "books/#{book.id}") %></li>
+    <% end %>
+</ul>
+```
+
+
+Rails is able to generate the url based on the routes:
+```
+> rails c
+app.books_path
+=> "/books"
+app.books_url
+=> "http://wwwexample.com/books"
+```
+
+Both are interchangeable and link to a route
++ *model* **_url**
+    + generally used in controllers
+    
++ *model* **_path**
+    + gentrally used in views
+    + `<%= link_to "All Books", books_url %>`
+
+However not all actions have route names and have to be explicitly created
+
+
+`config/routes.rb`
+```ruby
+Rails.application.routes.draw do
+    get "books" => "books#index"
+    get "books/:id" => "books#show", as: "book"
+end
+```
