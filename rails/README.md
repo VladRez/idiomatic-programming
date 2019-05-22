@@ -321,13 +321,24 @@ end
 Routes connect HTTP requests to controller actions.
 
 `config/routes.rb`
+
+Route
++ `get("/path/:id",{to: "controller#action", as: "method"})`
+    + `get()` - http method
+    + `/path/` - path to `controller#action`
+        + `:id` - dynamic variable that will be available as a parameter
+    + `to: "controller#action"` - code to be executed
+    + `as:  "method"` - method that directs to path
+        + `as: book` - > `book_path(1)` - > `/books/1` 
+
 ```ruby
 Rails.application.routes.draw do
     # routes a GET request to the index action in the books controller 
-    get "books" => "books#index"
+        #books refers to the controller file not class
+    get("/books", {to: "books#index", as: 'books'})
     # routes a GET to the show action, explicit id
     #get "books/1" => "books#show"
-    get "books/:id" => "books#show"
+    get("/books/:id", {to: "books#show", as: 'book'})
     #or
     # get "books/show"
     #or
@@ -407,10 +418,10 @@ app.books_url
 ```
 
 Both are interchangeable and link to a route
-+ *model* **_url**
++ **_url**
     + generally used in controllers
     
-+ *model* **_path**
++ **_path**
     + gentrally used in views
     + `<%= link_to "All Books", books_url %>`
 
@@ -483,21 +494,23 @@ Views: `app/views/books/index.html.erb`
 
 ### Forms
 
-Forums are used when creating/updating a record.
+Forms are used when creating/updating a record.
 
-#### Updating
++ `form_for` - generates html for forms
 
-Edit hyperlink -> route to /book/1/edit -> book(controller)#edit(action) -> render view
+Updating records
 
-+ `config/routes.rb`
+hyperlink -> route to /book/1/edit -> book(controller)#edit(action) -> render view
 
+`config/routes.rb`
 ```ruby
-    get "books" => "books#index"
-    get "books/:id" => "books#show", as: "book" 
-    get "books/:id/edit" => "books#edit", as: "edit_book"
+Rails.application.routes.draw do
+    get('/books/:id/edit',{to: 'books#edit', as: 'edit_book'})
+    patch('/books/:id/',{to: 'books#update', as: 'edit_book'})
+end
 ```
 
-+ `rails routes`
+`rails routes`
 
 ```
 Prefix Verb URI Pattern                 Controller#Action
@@ -506,46 +519,48 @@ book        GET /books/:id(.:format)        books#show
 edit_book   GET /books/:id/edit(.:format)   books#edit
 ```
 
-+ `rails c`
+`rails c`
 ```
 >> app.edit_book_path(1)
 => 'book/1/edit/`
 ```
 
-+ Create a link in the show to the edit action `app/view/books/show.html.erb`
-
-```html
-<%= link_to("Edit", edit_book_path(@book.id)) %>
-```
-
-+ `app/controller/books_controller.rb`
+`books_controller.rb`
 
 ```ruby
-class BooksController < ApplicationController
-    def index
-        @books = Book.all
-    end
-
-    def show
-        @book = Book.find(params[:id])
-    end
-
+class BookController < ApplicationController
     def edit
-    #Here we want to setup an @book instance variable to look for the book to edit
-        # @book variable is used to pre-fill form data
-        @book = Book.find(params[:id])
-            # we can find by :id because there is a place holder in the route for :id
+        @book = Book.find_by(id: params[:id])
+    end
+
+    def update
+        @book = Book.find_by(id: params[:id])
+        @book.update(title: params[:form_data][:title], pages: params[:form_data][:pages].to_i)
     end
 end
 ```
-
-+ `app/views/books/edit.html.erb`
-    + using `form_for` helper to generate forms
+`edit.html.erb`
 ```html
-<%= form_for(@book) do |f| %>
-    <%= f.label :name%>
-    <%= f.text_field :name%>
+<%= form_for(@book, {as: :form_data, url: edit_book(@book.id), method: :patch}) do |form| %>
+    <%= form.label('Title') %>
+    <%= form.text_field(:title) %>
 
-    <%= f.submit %>
+    <%= form.label('Pages') %>
+    <%= form.text_field(:title) %>
+
+    <%= form.submit("Update Record") %>
 <% end %>
 ```
+
+Submitting the form will pass the information in a `params` hash.
+
+```
+{"utf8"=>"✓",
+ "_method"=>"patch",
+ "authenticity_token"=>"+aahApa9ivhiX8R094gx19OsOTqHOy7opNTOAaFpgI6C8d==",
+ "form_data"=>{"title"=>"Java", "pages"=>"100"},
+ "commit"=>"Update Record",
+ "id"=>"1"}
+```
+
+
