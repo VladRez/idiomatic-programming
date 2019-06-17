@@ -315,6 +315,42 @@ module BooksHelper
     end
 end
 ```
+### Associations
+
+Associations are methods that generate code to connects models together. 
+Useful for abstracting away SQL
+
+Although there are many association types the common ones are:
+
++ `belongs_to` - matches a model's `foreign key` to a target model's `primary key`
+    `...where users.id = ?`
++ `has_many` - matches a model's `primary key` to a target model's `foreign key`
+    `...where users.foreign_key_name = ?`
+    + `has_many` `through:`  using other associations when there's no direct `foreign key` available
++ `has_one` - same as `has_many` but limits the result by 1
+
+format: association_type(:method_name, options_hash)
+
+```ruby
+#:name of method will be the name of the method used to invoke active records
+has_many(:name_of_association_1, {
+    primary_key: :id, # primary key column
+    foreign_key: :f_id, # foreign key column
+    class_name: :Model_name # Name of model class
+})
+
+belongs_to(:name_of_association_2, {
+    primary_key: :id, # primary key column
+    foreign_key: :f_id, # foreign key column
+    class_name: :Model_name # Name of model class
+})
+
+has_many(:name_of_association_3, {
+    through: :name_of_association_2, # association name
+    source: :other_association_1
+})
+# Through association automatically creates inner joins
+```
 
 ## Routing
 
@@ -349,7 +385,7 @@ end
 ```
 ### Linking Routes
 
- URL links are automatically captured in a hash called `params` and accessible within any action.
+ URL links are automatically captured in a nested hash structure called `params` and is accessible within any action.
 
 `http://www.website.com/books/1` is functionally the same as `Book.find(1)` or `Book.find_by(id: 1)` because the URI is captured as `{id: 1}`. 
 
@@ -422,7 +458,7 @@ Both are interchangeable and link to a route
     + generally used in controllers
     
 + **_path**
-    + gentrally used in views
+    + generally used in views
     + `<%= link_to "All Books", books_url %>`
 
 However not all actions have route names and have to be explicitly created
@@ -492,67 +528,87 @@ Views: `app/views/books/index.html.erb`
 |book|GET|/book/:id(.:format)|book#show|book_url(1)|http://www.example.com/book/1|
 |book|GET|/book/:id(.:format)|book#show|book_path(1)|/book/1|
 
-### Forms
+<!-- ## Forms
 
-Forms are used when creating/updating a record.
+Creating and Updating records using forms
 
-+ `form_for` - generates html for forms
++ `form_for` - generates html for forms and sends the form data in a `params` hash to the controller
 
-Updating records
 
-hyperlink -> route to /book/1/edit -> book(controller)#edit(action) -> render view
+hyperlink -> route to /book/1/edit -> book(controller)#edit(action) -> render view -->
+
 
 `config/routes.rb`
+
 ```ruby
 Rails.application.routes.draw do
-    get('/books/:id/edit',{to: 'books#edit', as: 'edit_book'})
-    patch('/books/:id/',{to: 'books#update', as: 'edit_book'})
+root({to: 'books#index'})
+  get('/books/new', {to: 'books#new', as: 'new_book'})
+  get('/books', {to: 'books#index', as: 'books'})
+  get('/books/:id/show', {to: 'books#show', as: 'show_book'})
+  get('/books/:id/edit', {to: 'books#edit', as: 'edit_book'})
+  patch('/books/:id/update', {to: 'books#update', as: 'update_book'})
+  post('/books/create', {to: 'books#create', as: 'create_book'})
+  delete('/books/:id/destroy', {to: 'books#destroy', as: 'destroy_book'})
 end
 ```
 
 `rails routes`
 
 ```
-Prefix Verb URI Pattern                 Controller#Action
-books       GET /books(.:format)            books#index
-book        GET /books/:id(.:format)        books#show
-edit_book   GET /books/:id/edit(.:format)   books#edit
+      Prefix Verb   URI Pattern                    Controller#Action
+        root GET    /                              books#index
+    new_book GET    /books/new(.:format)           books#new
+       books GET    /books(.:format)               books#index
+   show_book GET    /books/:id/show(.:format)      books#show
+   edit_book GET    /books/:id/edit(.:format)      books#edit
+ update_book PATCH  /books/:id/update(.:format)    books#update
+ create_book POST   /books/create(.:format)        books#create
+destroy_book DELETE /books/:id/destroy(.:format)   books#destroy
 ```
 
-`rails c`
+Accessing the edit path for example:
+
+In `rails c`
 ```
 >> app.edit_book_path(1)
 => 'book/1/edit/`
 ```
 
-`books_controller.rb`
+ Also renders a form in `edit.html.erb` view. A form needs to bind to some object and the `params` hash will provide data to `books#edit` controller#action using the `:id` that's specified in the router to create that object. 
+
+`params` hash:
+
+```
+{"id"=>"1"}
+```
+
+`books#edit`
 
 ```ruby
-class BookController < ApplicationController
     def edit
         @book = Book.find_by(id: params[:id])
     end
-
-    def update
-        @book = Book.find_by(id: params[:id])
-        @book.update(title: params[:form_data][:title], pages: params[:form_data][:pages].to_i)
-    end
-end
 ```
+
 `edit.html.erb`
 ```html
-<%= form_for(@book, {as: :form_data, url: edit_book(@book.id), method: :patch}) do |form| %>
-    <%= form.label('Title') %>
-    <%= form.text_field(:title) %>
+<h1>Editing <%= @book.title %></h1>
 
-    <%= form.label('Pages') %>
-    <%= form.text_field(:title) %>
+<%= form_for(@book, {as: :form_data, url: update_book_path(@book.id), method: :patch}) do |f| %>
+   <%=  f.label("Book Title") %>
+    <%= f.text_field(:title) %>
 
-    <%= form.submit("Update Record") %>
+   <%=  f.label("Number of Pages") %>
+    <%= f.text_field(:pages) %>
+
+    <%= f.submit %>
 <% end %>
+
+<%= link_to("ALL BOOKS", books_path) %>
 ```
 
-Submitting the form will pass the information in a `params` hash.
+Submitting the form will pass the information in the `params` hash to the mapped controller `books#update`.
 
 ```
 {"utf8"=>"✓",
@@ -562,5 +618,93 @@ Submitting the form will pass the information in a `params` hash.
  "commit"=>"Update Record",
  "id"=>"1"}
 ```
+
+`books_controller.rb`
+
+Since form data can be compromised and malicious data can be sent we need to whitelist keys in the `params` hash and permit only certain attributes intended to be assigned from a form.
+
+instead of 
++ `@book.update(params[:form_data])` - mass assignment
++ `@book.update(title: params[:form_data][:title], pages: params[:form_data][:pages].to_i)`
+
+It's better to create a utility method using the `require` method to require a key to exist in the `params` hash and exclusively permit the form fields with `permit`
+```ruby
+class BookController < ApplicationController
+    def edit
+        @book = Book.find_by(id: params[:id])
+    end
+
+    def update
+        @book = Book.find_by(id: params[:id])
+        @book.update(book_params)
+        # run the show method
+        redirect_to  book_show_url(@book.id)
+    end
+
+    private
+
+    def book_params
+         params.require(:form_data).permit(:title, :pages)
+    end
+end
+```
+
+Options to show the results of an action:
++ `render` - use the view template to show the response of an action.
+    + Won't work with patch requests as re-loading the page will re-run patch method.
++ `redirect_to` - run an action with a path
+
+
+This is a tedious workflow and rails provides an easier way of doing this.
+
+Given an entity like a book it common to:
++ Create a record
++ List all records
++ Display a record
++ Edit a record
++ Delete a record
+
+In rails these are called *resources* and can be simplified down to:
+
+```ruby
+Rails.application.routes.draw do
+    resources :books
+end
+```
+
+Resulting automatically creating routes:
+```
+   Prefix Verb   URI Pattern                   Controller#Action
+    books GET    /books(.:format)              books#index 
+          POST   /books(.:format)              books#create
+ new_book GET    /books/new(.:format)          books#new
+edit_book GET    /books/:id/edit(.:format)     books#edit
+     book GET    /books/:id(.:format)          books#show
+          PATCH  /books/:id(.:format)          books#update
+          PUT    /books/:id(.:format)          books#update
+          DELETE /books/:id(.:format)          books#destroy
+```
+
+Then just update the form to match the new route
+`edit.html.erb`
+```html
+<h1>Editing <%= @book.title %></h1>
+
+<%= form_for(@book, {as: :form_data, url: book_path(@book.id), method: :patch}) do |f| %>
+   <%=  f.label("Book Title") %>
+    <%= f.text_field(:title) %>
+
+   <%=  f.label("Number of Pages") %>
+    <%= f.text_field(:pages) %>
+
+    <%= f.submit %>
+<% end %>
+
+<%= link_to("ALL BOOKS", books_path) %>
+```
+
+
+
+
 
 
