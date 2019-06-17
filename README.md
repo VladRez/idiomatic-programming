@@ -26,8 +26,15 @@ garbage collected memory management. Almost everything is an object including wh
     + Longe Methods
     + Primitive Obsession
 
++ [Rails][rails]
+    + ActiveRecords
+    + Routing
+    + Model
+    + Controller
+    + View
 
 [basics]: basic-ruby/
 [oop]: object-oriented-ruby/
 [codesmells]: code-smells/
+[rails]: rails/
 

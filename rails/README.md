@@ -352,7 +352,7 @@ has_many(:name_of_association_3, {
 # Through association automatically creates inner joins
 ```
 
-## Routing
+# Routing
 
 Routes connect HTTP requests to controller actions.
 
