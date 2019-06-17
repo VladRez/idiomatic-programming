@@ -23,7 +23,7 @@ garbage collected memory management. Almost everything is an object including wh
     + Data clump
     + Divergent Change
     + Feature Envy
-    + Longe Methods
+    + Long Methods
     + Primitive Obsession
 
 + [Rails][rails]
